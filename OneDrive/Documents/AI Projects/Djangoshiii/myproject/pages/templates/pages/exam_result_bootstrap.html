@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam Result</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5 text-center">
+    <h2>Exam Results for {{ course.name }}</h2>
+    
+    <div class="alert {% if passed %}alert-success{% else %}alert-danger{% endif %} mt-4">
+        {% if passed %}
+            <h4>Congratulations! You passed the exam.</h4>
+        {% else %}
+            <h4>Sorry, you failed the exam. Please try again.</h4>
+        {% endif %}
+        <p>Your score is: <strong>{{ score }}%</strong></p>
+    </div>
+    
+    <a href="{% url 'pages:course_details' course.id %}" class="btn btn-primary">Back to Course</a>
+</div>
+</body>
+</html>

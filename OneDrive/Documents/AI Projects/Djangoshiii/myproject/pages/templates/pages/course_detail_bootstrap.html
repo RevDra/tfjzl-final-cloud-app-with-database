@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ course.name }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-primary">{{ course.name }}</h2>
+        <p>{{ course.description }}</p>
+
+        <h4 class="mt-4">Lessons:</h4>
+        <ul class="list-group mb-5">
+            {% for lesson in course.lesson_set.all %}
+                <li class="list-group-item">{{ lesson.title }}</li>
+            {% empty %}
+                <li class="list-group-item">No lessons added yet.</li>
+            {% endfor %}
+        </ul>
+
+        <hr>
+
+        <h3 class="text-danger">Final Exam</h3>
+        <form action="{% url 'pages:submit' course.id %}" method="post">
+            {% csrf_token %}
+            
+            {% for question in course.question_set.all %}
+                <div class="card mt-4 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5>{{ question.content }}</h5>
+                    </div>
+                    <div class="card-body">
+                        {% for choice in question.choice_set.all %}
+                            <div class="form-check mt-2">
+                                <input type="radio" name="choice_{{ question.id }}" id="choice_{{ choice.id }}" class="form-check-input" value="{{ choice.id }}">
+                                <label for="choice_{{ choice.id }}" class="form-check-label">{{ choice.content }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% empty %}
+                <p>No questions available for this exam.</p>
+            {% endfor %}
+            
+            <br>
+            <button type="submit" class="btn btn-success btn-lg btn-block mb-5">Submit Exam</button>
+        </form>
+    </div>
+</body>
+</html>

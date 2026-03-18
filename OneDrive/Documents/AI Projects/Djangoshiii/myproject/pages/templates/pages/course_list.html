@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Online Courses</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4 text-primary">Available Courses</h2>
+        
+        <div class="list-group shadow-sm">
+            {% for course in course_list %}
+                <a href="{% url 'pages:course_details' course.id %}" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1 font-weight-bold">{{ course.name }}</h5>
+                    </div>
+                    <p class="mb-1 text-muted">{{ course.description }}</p>
+                </a>
+            {% empty %}
+                <div class="alert alert-warning text-center">
+                    No courses available right now. Please add some courses from the Admin panel.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
