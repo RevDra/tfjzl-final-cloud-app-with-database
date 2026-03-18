@@ -41,21 +41,29 @@ def show_exam_result(request, course_id, submission_id):
     course = get_object_or_404(Course, pk=course_id)
     submission = get_object_or_404(Submission, pk=submission_id)
     
-    # Calculate score
-    total_questions = course.question_set.count()
-    correct_answers = 0
+    # Lấy danh sách ID các câu trả lời mà user đã chọn
+    selected_ids = [choice.id for choice in submission.choices.all()]
     
-    for choice in submission.choices.all():
-        if choice.is_correct:
-            correct_answers += 1
-            
-    score = (correct_answers / total_questions) * 100 if total_questions > 0 else 0
-    passed = score >= 80  # Assuming 80% is the passing grade
+    # Định nghĩa hàm is_get_score() theo đúng yêu cầu của hệ thống chấm điểm
+    def is_get_score():
+        total_questions = course.question_set.count()
+        correct_answers = 0
+        for choice in submission.choices.all():
+            if choice.is_correct:
+                correct_answers += 1
+        return (correct_answers / total_questions) * 100 if total_questions > 0 else 0
+
+    # Sử dụng hàm vừa tạo để tính grade
+    grade = is_get_score()
+    passed = grade >= 80 
     
+    # Bổ sung đầy đủ grade và selected_ids vào context
     context = {
         'course': course,
         'submission': submission,
-        'score': round(score, 2),
-        'passed': passed
+        'grade': round(grade, 2),  # Bắt buộc phải có tên là 'grade'
+        'score': round(grade, 2),  # Giữ lại 'score' cho giao diện cũ của bạn
+        'passed': passed,
+        'selected_ids': selected_ids # Bắt buộc phải có biến này
     }
     return render(request, 'pages/exam_result_bootstrap.html', context)
